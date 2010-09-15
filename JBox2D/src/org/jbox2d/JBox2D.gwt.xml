@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='jbox2d'>
+<!--  <inherits name='com.google.gwt.user.User'/> -->
+  <source path='collision'/>
+  <source path='common'/>
+  <source path='dynamics'/>
+  <source path='util'/>
+</module>
