@@ -3,6 +3,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='org.jbox2d.JBox2D'/>
   <inherits name='gwt.g2d.g2d'/>
+  <inherits name='no.eirikb.h5z1.H5Z1Visual'/>
   <entry-point class='no.eirikb.h5z1.client.H5Z1'/>
   <source path='client'/>
 </module>
