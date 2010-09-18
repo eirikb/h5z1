@@ -7,5 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-g2d-v007.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JBox2D"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/H5Z1Visual"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

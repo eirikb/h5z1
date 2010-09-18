@@ -1,6 +1,5 @@
 package no.eirikb.h5z1.client;
 
-import gwt.g2d.client.graphics.Surface;
 import gwt.g2d.client.util.FpsTimer;
 
 import org.jbox2d.collision.AABB;
@@ -13,6 +12,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -33,54 +33,23 @@ public class H5Z1 implements EntryPoint {
 		Vec2 gravity = new Vec2(0.0f, -10.0f);
 		boolean doSleep = false;
 		world = new World(aabb, gravity, doSleep);
+		
+		final Label label = new Label();
 
 		final TestSettings settings = new TestSettings();
 		createBridge();
 
-		final Surface surface = new Surface(WIDTH, HEIGHT);
-		final Draw draw = new Draw(surface);
-
 		final float timeStep = settings.hz > 0.0f ? 1.0f / settings.hz : 0.0f;
-
-		draw.setFlags(0);
-		if (settings.drawShapes)
-			draw.appendFlags(Draw.e_shapeBit);
-		if (settings.drawJoints)
-			draw.appendFlags(Draw.e_jointBit);
-		if (settings.drawCoreShapes)
-			draw.appendFlags(Draw.e_coreShapeBit);
-		if (settings.drawAABBs)
-			draw.appendFlags(Draw.e_aabbBit);
-		if (settings.drawOBBs)
-			draw.appendFlags(Draw.e_obbBit);
-		if (settings.drawPairs)
-			draw.appendFlags(Draw.e_pairBit);
-		if (settings.drawCOMs)
-			draw.appendFlags(Draw.e_centerOfMassBit);
 		FpsTimer fpsTimer = new FpsTimer() {
 
 			@Override
 			public void update() {
-				long canvasTime = System.currentTimeMillis();
-				surface.clear();
-				long box2DTime = System.currentTimeMillis();
-
 				world.step(timeStep, settings.iterationCount);
-
-				box2DTime = System.currentTimeMillis() - box2DTime;
-				surface.strokeText("FPS: " + (int) getFps() + " (desired: "
-						+ (int) getDesiredFps() + ')', 10, 10);
-				surface.strokeText("Box2D: " + (int) box2DTime, 10, 20);
-				canvasTime = System.currentTimeMillis() - canvasTime;
-				surface.strokeText("Canvas: " + (int) canvasTime, 10, 30);
-				surface.strokeText("Bodies: " + world.getBodyCount(), 10, 40);
-
+				label.setText("Thank you f1sh, FPS: " + getFps());
 			}
 		};
 
-		draw.setCamera(0.0f, 10.0f, 20f);
-		world.setDebugDraw(draw);
-		RootPanel.get().add(surface);
+		RootPanel.get().add(label);
 		fpsTimer.start();
 	}
 
