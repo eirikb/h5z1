@@ -121,4 +121,7 @@ public interface Resources extends ClientBundle {
 	
 	@Source("crate.png")
 	ExternalImageResource crate();
+	
+	@Source("fr.png")
+	ExternalImageResource fr();
 }

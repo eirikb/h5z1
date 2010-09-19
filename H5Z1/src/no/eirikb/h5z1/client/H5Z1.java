@@ -11,11 +11,15 @@ import no.eirikb.h5z1.client.resources.ResourcesContainer.ListenComplete;
 import no.eirikb.h5z1.client.visualbody.VisualPlayer;
 
 import org.jbox2d.collision.AABB;
+import org.jbox2d.collision.CircleDef;
+import org.jbox2d.collision.Shape;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.ContactFilter;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -23,6 +27,8 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -62,8 +68,19 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		aabb.lowerBound = new Vec2(-200.0f, -100.0f);
 		aabb.upperBound = new Vec2(200.0f, 200.0f);
 		Vec2 gravity = new Vec2(0.0f, -50.0f);
-		boolean doSleep = false;
+		boolean doSleep = true;
 		world = new World(aabb, gravity, doSleep);
+		world.setContactFilter(new ContactFilter() {
+
+			@Override
+			public boolean shouldCollide(Shape shape1, Shape shape2) {
+				if (shape1.m_body instanceof VisualPlayer
+						|| shape2.m_body instanceof VisualPlayer) {
+					me.setJumping(false);
+				}
+				return true;
+			}
+		});
 
 		final TestSettings settings = new TestSettings();
 		mapBuilder = new MapBuilder();
@@ -123,9 +140,31 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (me != null) {
-					me.onMouse(event.getRelativeX(gameMap.getElement()),
-							event.getRelativeY(gameMap.getElement()));
+					me.onMouse(event.getRelativeX(gameMap.getElement()) - 100,
+							event.getRelativeY(gameMap.getElement()) + 100);
 				}
+			}
+		});
+
+		gameMap.addMouseDownHandler(new MouseDownHandler() {
+
+			@Override
+			public void onMouseDown(MouseDownEvent event) {
+				CircleDef cd = new CircleDef();
+				cd.radius = 0.1f;
+				cd.density = 1;
+				BodyDef bd = new BodyDef();
+				bd.isBullet = true;
+				double cosin[] = me.cosin(
+						event.getRelativeX(gameMap.getElement()) - 100,
+						event.getRelativeY(gameMap.getElement()) + 100);
+				bd.position.set(me.getPosition().x + (float) cosin[0] * 1,
+						me.getPosition().y);
+				Body b = world.createBody(bd);
+				b.createShape(cd);
+				b.setMassFromShapes();
+				b.setLinearVelocity(new Vec2((float) (cosin[0] * 100),
+						(float) (-cosin[1] * 100)));
 			}
 		});
 
@@ -147,13 +186,15 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		} else if (event.isLeftArrow() || event.getNativeKeyCode() == 65) {
 			way = -10;
 		} else if (event.getNativeKeyCode() == 87) {
-			jump = true;
+			if (!me.isJumping()) {
+				jump = true;
+				me.setJumping(true);
+			}
 		}
 	}
 
 	@Override
 	public void keyUp(int keyCode) {
-		GWT.log("Key up! " + keyCode);
 		if (keyCode == 68 || keyCode == 65) {
 			way = 0;
 		}

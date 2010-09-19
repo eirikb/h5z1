@@ -1,13 +1,11 @@
 package no.eirikb.h5z1.client;
 
 import gwt.g2d.client.graphics.Color;
-import gwt.g2d.client.graphics.DirectShapeRenderer;
 import gwt.g2d.client.graphics.Surface;
 import gwt.g2d.client.graphics.shapes.ShapeBuilder;
 import no.eirikb.h5z1.visual.VisualBody;
 import no.eirikb.h5z1.visual.VisualImage;
 
-import org.jbox2d.collision.CircleShape;
 import org.jbox2d.collision.PolygonShape;
 import org.jbox2d.collision.Shape;
 import org.jbox2d.collision.ShapeType;
@@ -16,7 +14,6 @@ import org.jbox2d.common.XForm;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 
 public class GameMap extends Surface {
@@ -103,18 +100,17 @@ public class GameMap extends Surface {
 				if (b.m_invMass == 0.0f) {
 					setStrokeStyle(new Color(100, 100, 100));
 				} else if (b.isSleeping()) {
-					GWT.log("HELLO WORLD");
-					setStrokeStyle(new Color(30, 30, 90));
+					setStrokeStyle(new Color(200, 200, 200));
 				} else {
 					setStrokeStyle(new Color(30, 30, 30));
 				}
 				if (s.getType() == ShapeType.CIRCLE_SHAPE) {
-					CircleShape circle = (CircleShape) s;
-					Vec2 center = XForm.mul(xf, circle.getLocalPosition());
-					float radius = circle.getRadius() * scaleFactor;
-					center = worldToScreen(center);
-					strokeShape(new ShapeBuilder().drawCircle(center.x,
-							center.y, radius).build());
+//					CircleShape circle = (CircleShape) s;
+//					Vec2 center = XForm.mul(xf, circle.getLocalPosition());
+//					float radius = circle.getRadius() * scaleFactor;
+//					center = worldToScreen(center);
+//					strokeShape(new ShapeBuilder().drawCircle(center.x,
+//							center.y, radius).build());
 				} else if (s.getType() == ShapeType.POLYGON_SHAPE) {
 					PolygonShape poly = (PolygonShape) s;
 					int vertexCount = poly.getVertexCount();

@@ -48,8 +48,8 @@ public class VisualPlayer extends Body implements VisualBody {
 						7, bottomOffsetX, bottomOffsetY), 7);
 				walkRightAnimation = new Animation(getImages(images2, "br", 1,
 						7, bottomOffsetX, bottomOffsetY), 7);
-				jumpAnimation = new Animation(getImages(images2, "j", 0, 4, 0,
-						0), 2);
+				jumpAnimation = new Animation(getImages(images2, "j", 0, 4, -8,
+						-15), 2);
 				standRightImage = new VisualImage(images2.get("pbr1"),
 						bottomOffsetX, bottomOffsetY);
 				standLeftImage = new VisualImage(images2.get("pbl1"),
@@ -71,9 +71,9 @@ public class VisualPlayer extends Body implements VisualBody {
 		return images2;
 	}
 
-	public double[] cosin(double x1, double y1, double x2, double y2) {
-		int a = (int) (y2 - y1);
-		int b = (int) (x2 - x1);
+	public double[] cosin(double x2, double y2) {
+		int a = (int) (y2 - visualX);
+		int b = (int) (x2 - visualY);
 		double h = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 		double sine = a / h;
 		double cosine = b / h;
@@ -82,7 +82,7 @@ public class VisualPlayer extends Body implements VisualBody {
 
 	public void onMouse(int x, int y) {
 
-		double[] cosin = cosin(visualX, visualY, x, y);
+		double[] cosin = cosin(x, y);
 		int way = cosin[0] > 0 ? 0 : 4;
 		int number = 0;
 		double sin = cosin[1];
@@ -135,6 +135,14 @@ public class VisualPlayer extends Body implements VisualBody {
 	@Override
 	public void setVisualY(int visualY) {
 		this.visualY = visualY;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
+	}
+
+	public boolean isJumping() {
+		return jumping;
 	}
 
 }

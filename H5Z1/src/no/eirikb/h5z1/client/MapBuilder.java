@@ -33,13 +33,11 @@ public class MapBuilder {
 		Body ground2 = b;
 
 		pd = new PolygonDef();
-		pd.setAsBox(1, 0.5f);
+		pd.setAsBox(1, 0.2f);
 		pd.friction = 0;
 		bd = new BodyDef();
 		bd.position.set(1, 0.5f);
 		bd.fixedRotation = true;
-		bd.allowSleep = true;
-		bd.isSleeping = true;
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
@@ -52,6 +50,7 @@ public class MapBuilder {
 		bd.position.set(-2, 1.5f);
 		bd.fixedRotation = true;
 		me = new VisualPlayer(bd, world);
+		me.allowSleeping(false);
 		world.createBody(me);
 		me.createShape(pd);
 		me.setMassFromShapes();
