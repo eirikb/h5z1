@@ -147,6 +147,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 						} else {
 							reloading = false;
 						}
+						reload = RELOADSPEED;
 					}
 
 				}
