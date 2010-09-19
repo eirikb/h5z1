@@ -8,6 +8,9 @@
  */
 package no.eirikb.h5z1.client.keyhack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 
@@ -21,10 +24,11 @@ public class KeyHack {
 	private Long lastKeyPress;
 	private Integer nativeKeyCode;
 	private boolean anotherKeyPresses;
-	private int keyCode;
+	private List<Integer> keyCodes;
 
 	public KeyHack(KeyHackCallback keyHackCallback) {
 		this.keyHackCallback = keyHackCallback;
+		keyCodes = new ArrayList<Integer>();
 	}
 
 	public void setAnotherKeyPresses(boolean anotherKeyPresses) {
@@ -39,18 +43,16 @@ public class KeyHack {
 		if (lastKeyPress == null) {
 			nativeKeyCode = event.getNativeKeyCode();
 			keyHackCallback.keyDown(event);
+			keyCodes.add(event.getNativeKeyCode());
 		}
 	}
 
 	public void keyUp(KeyUpEvent event) {
-		if (event.getNativeKeyCode() == nativeKeyCode) {
-			if (anotherKeyPresses) {
-				anotherKeyPresses = false;
-				keyHackCallback.keyUp(nativeKeyCode);
-			} else {
-				lastKeyPress = System.currentTimeMillis();
-				keyCode = event.getNativeKeyCode();
-			}
+		if (anotherKeyPresses) {
+			anotherKeyPresses = false;
+			keyHackCallback.keyUp(keyCodes.remove(keyCodes.size() - 1));
+		} else {
+			lastKeyPress = System.currentTimeMillis();
 		}
 	}
 
@@ -58,7 +60,7 @@ public class KeyHack {
 		if (lastKeyPress != null
 				&& System.currentTimeMillis() - lastKeyPress > 100) {
 			lastKeyPress = null;
-			keyHackCallback.keyUp(keyCode);
+			keyHackCallback.keyUp(keyCodes.remove(keyCodes.size() - 1));
 		}
 	}
 }
