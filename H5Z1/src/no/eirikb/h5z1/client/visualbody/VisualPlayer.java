@@ -131,20 +131,6 @@ public class VisualPlayer extends Body implements VisualBody {
 	}
 
 	@Override
-	public void setLinearVelocity(Vec2 v) {
-		super.setLinearVelocity(v);
-		if (v.x > 2) {
-			animation = walkRightAnimation;
-		} else if (v.x < -2) {
-			animation = walkLeftAnimation;
-		} else {
-			if (images.size() > 0) {
-				images.set(0, standRightImage);
-			}
-		}
-	}
-
-	@Override
 	public void setVisualX(int visualX) {
 		this.visualX = visualX;
 	}
@@ -172,4 +158,18 @@ public class VisualPlayer extends Body implements VisualBody {
 		}
 	}
 
+	public void walkRight() {
+		animation = walkRightAnimation;
+	}
+
+	public void walkLeft() {
+		animation = walkLeftAnimation;
+	}
+
+	public void stopWalk() {
+		animation = null;
+		if (images.size() > 0) {
+			images.set(0, standRightImage);
+		}
+	}
 }

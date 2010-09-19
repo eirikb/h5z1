@@ -23,7 +23,6 @@ import org.jbox2d.dynamics.ContactFilter;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,7 +36,9 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -81,6 +82,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	}
 
 	private void start() {
+		FocusPanel fp = new FocusPanel();
 		ammo = new ArrayList<Image>();
 		for (int i = 0; i < 20; i++) {
 			ammo.add(new Image(Resources.INSTANCE.bullet1()));
@@ -107,7 +109,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		mapBuilder = new MapBuilder();
 		mapBuilder.createMap(world);
 
-		gameMap = new GameMap(world, WIDTH, HEIGHT);
+		gameMap = new GameMap(world, mapBuilder, 10000, HEIGHT, WIDTH, HEIGHT);
 		final float timeStep = settings.hz > 0.0f ? 1.0f / settings.hz : 0.0f;
 		fpsTimer = new FpsTimer() {
 
@@ -244,8 +246,10 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	public void keyDown(KeyDownEvent event) {
 		if (event.isRightArrow() || event.getNativeKeyCode() == 68) {
 			way = 10;
+			me.walkRight();
 		} else if (event.isLeftArrow() || event.getNativeKeyCode() == 65) {
 			way = -10;
+			me.walkLeft();
 		} else if (event.getNativeKeyCode() == 87) {
 			if (!me.isJumping()) {
 				jump = true;
@@ -262,6 +266,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	public void keyUp(int keyCode) {
 		if (keyCode == 68 || keyCode == 65) {
 			way = 0;
+			me.stopWalk();
 		}
 	}
 }

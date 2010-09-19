@@ -95,7 +95,7 @@ public interface Resources extends ClientBundle {
 	ExternalImageResource pbr7();
 
 	@Source("bg1.png")
-	ExternalImageResource bg1();
+	ImageResource bg1();
 
 	@Source("pj1.png")
 	ExternalImageResource pj1();

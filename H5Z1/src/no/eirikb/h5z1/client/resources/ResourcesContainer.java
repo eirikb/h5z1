@@ -25,13 +25,13 @@ public class ResourcesContainer {
 			Resources.INSTANCE.pbr2(), Resources.INSTANCE.pbr3(),
 			Resources.INSTANCE.pbr4(), Resources.INSTANCE.pbr5(),
 			Resources.INSTANCE.pbr6(), Resources.INSTANCE.pbr7(),
-			Resources.INSTANCE.bg1(), Resources.INSTANCE.pj1(),
-			Resources.INSTANCE.pj2(), Resources.INSTANCE.pj3(),
-			Resources.INSTANCE.pj4(), Resources.INSTANCE.zl1(),
-			Resources.INSTANCE.zl2(), Resources.INSTANCE.zl3(),
-			Resources.INSTANCE.zr1(), Resources.INSTANCE.zr2(),
-			Resources.INSTANCE.zr3(), Resources.INSTANCE.crate(),
-			Resources.INSTANCE.fr(), Resources.INSTANCE.fl() };
+			Resources.INSTANCE.pj1(), Resources.INSTANCE.pj2(),
+			Resources.INSTANCE.pj3(), Resources.INSTANCE.pj4(),
+			Resources.INSTANCE.zl1(), Resources.INSTANCE.zl2(),
+			Resources.INSTANCE.zl3(), Resources.INSTANCE.zr1(),
+			Resources.INSTANCE.zr2(), Resources.INSTANCE.zr3(),
+			Resources.INSTANCE.crate(), Resources.INSTANCE.fr(),
+			Resources.INSTANCE.fl() };
 	private static int count;
 
 	private ResourcesContainer() {

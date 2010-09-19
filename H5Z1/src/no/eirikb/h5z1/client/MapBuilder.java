@@ -1,7 +1,12 @@
 package no.eirikb.h5z1.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import no.eirikb.h5z1.client.resources.Resources;
 import no.eirikb.h5z1.client.visualbody.VisualCrate;
 import no.eirikb.h5z1.client.visualbody.VisualPlayer;
+import no.eirikb.h5z1.client.visualbody.VisualStatic;
 
 import org.jbox2d.collision.PolygonDef;
 import org.jbox2d.common.Vec2;
@@ -12,35 +17,43 @@ import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 public class MapBuilder {
 	private VisualPlayer me;
+	private List<Body> visualBodies;
+	private List<Body> bodies;
 
 	public void createMap(World world) {
-
+		Body b;
+		visualBodies = new ArrayList<Body>();
+		bodies = new ArrayList<Body>();
 		PolygonDef pd = new PolygonDef();
-		pd.setAsBox(10.0f, 0.2f);
+		pd.setAsBox(12.3f, 0.2f);
 		BodyDef bd = new BodyDef();
-		bd.position.set(0.0f, 0.0f);
-		Body b = world.createBody(bd);
-		b.createShape(pd);
-		Body ground = b;
+		bd.position.set(-2.3f, 0.0f);
+		VisualStatic visualStatic = new VisualStatic(bd, world,
+				Resources.INSTANCE.bg1(), true);
+		world.createBody(visualStatic);
+		visualStatic.createShape(pd);
+		Body ground = visualStatic;
 
 		pd = new PolygonDef();
 		pd.setAsBox(30.0f, 0.2f);
 		bd = new BodyDef();
 		bd.position.set(50.0f, 0.0f);
 		bd.allowSleep = true;
-		b = world.createBody(bd);
-		b.createShape(pd);
-		Body ground2 = b;
+		visualStatic = new VisualStatic(bd, world, Resources.INSTANCE.bg1(),
+				true);
+		world.createBody(visualStatic);
+		visualStatic.createShape(pd);
+		Body ground2 = visualStatic;
 
-		pd = new PolygonDef();
-		pd.setAsBox(1, 0.2f);
-		pd.friction = 0;
-		bd = new BodyDef();
-		bd.position.set(1, 0.5f);
-		bd.fixedRotation = true;
-		b = world.createBody(bd);
-		b.createShape(pd);
-		b.setMassFromShapes();
+		// pd = new PolygonDef();
+		// pd.setAsBox(1, 0.2f);
+		// pd.friction = 0;
+		// bd = new BodyDef();
+		// bd.position.set(1, 0.5f);
+		// bd.fixedRotation = true;
+		// b = world.createBody(bd);
+		// b.createShape(pd);
+		// b.setMassFromShapes();
 
 		pd = new PolygonDef();
 		pd.setAsBox(0.5f, 0.8f);
@@ -54,6 +67,7 @@ public class MapBuilder {
 		world.createBody(me);
 		me.createShape(pd);
 		me.setMassFromShapes();
+		visualBodies.add(me);
 
 		Body prevBody = ground;
 		RevoluteJointDef jd = new RevoluteJointDef();
@@ -74,6 +88,7 @@ public class MapBuilder {
 			jd.initialize(prevBody, b, anchor);
 			world.createJoint(jd);
 			prevBody = b;
+			bodies.add(b);
 		}
 		Vec2 anchor = new Vec2(20.0f, 0);
 		jd.initialize(prevBody, ground2, anchor);
@@ -89,6 +104,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
+		bodies.add(b);
 
 		pd = new PolygonDef();
 		pd.setAsBox(0.2f, 1.5f);
@@ -100,6 +116,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
+		bodies.add(b);
 
 		pd = new PolygonDef();
 		pd.setAsBox(1.5f, 0.2f);
@@ -111,6 +128,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
+		bodies.add(b);
 
 		pd = new PolygonDef();
 		pd.setAsBox(0.8f, 0.8f);
@@ -122,6 +140,7 @@ public class MapBuilder {
 		world.createBody(crate);
 		crate.createShape(pd);
 		crate.setMassFromShapes();
+		visualBodies.add(crate);
 
 		for (int i = 0; i < 10; i++) {
 			pd = new PolygonDef();
@@ -134,6 +153,7 @@ public class MapBuilder {
 			b = world.createBody(bd);
 			b.createShape(pd);
 			b.setMassFromShapes();
+			bodies.add(b);
 		}
 	}
 
@@ -190,7 +210,15 @@ public class MapBuilder {
 	// body3.setMassFromShapes();
 	// }
 
+	public List<Body> getVisualBodies() {
+		return visualBodies;
+	}
+
 	public VisualPlayer getMe() {
 		return me;
+	}
+	
+	public List<Body> getBodies() {
+		return bodies;
 	}
 }
