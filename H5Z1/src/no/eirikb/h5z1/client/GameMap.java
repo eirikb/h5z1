@@ -25,19 +25,23 @@ public class GameMap extends Surface {
 	private float scaleFactor = 20.0f;
 	private float yFlip = -1.0f; // flip y coordinate
 
+	private final float map(float value, float istart, float istop,
+			float ostart, float ostop) {
+		return ostart + (ostop - ostart)
+				* ((value - istart) / (istop - istart));
+	}
+
 	public void setCamera(float x, float y, float scale) {
-		transX = Processor
-				.map(x, 0.0f, -1.0f, width * .5f, width * .5f + scale);
-		transY = Processor.map(y, 0.0f, yFlip * 1.0f, height * .5f, height
-				* .5f + scale);
+		transX = map(x, 0.0f, -1.0f, width * .5f, width * .5f + scale);
+		transY = map(y, 0.0f, yFlip * 1.0f, height * .5f, height * .5f + scale);
 		scaleFactor = scale;
 	}
 
 	public Vec2 worldToScreen(Vec2 world) {
-		float x = Processor.map(world.x, 0f, 1f, transX, transX + scaleFactor);
-		float y = Processor.map(world.y, 0f, 1f, transY, transY + scaleFactor);
+		float x = map(world.x, 0f, 1f, transX, transX + scaleFactor);
+		float y = map(world.y, 0f, 1f, transY, transY + scaleFactor);
 		if (yFlip == -1.0f)
-			y = Processor.map(y, 0f, height, height, 0f);
+			y = map(y, 0f, height, height, 0f);
 		return new Vec2(x, y);
 	}
 
@@ -46,11 +50,11 @@ public class GameMap extends Surface {
 	}
 
 	public Vec2 screenToWorld(Vec2 screen) {
-		float x = Processor.map(screen.x, transX, transX + scaleFactor, 0f, 1f);
+		float x = map(screen.x, transX, transX + scaleFactor, 0f, 1f);
 		float y = 0;
 		if (yFlip == -1.0f)
-			y = Processor.map(y, height, 0f, 0f, height);
-		y = Processor.map(y, transY, transY + scaleFactor, 0f, 1f);
+			y = map(y, height, 0f, 0f, height);
+		y = map(y, transY, transY + scaleFactor, 0f, 1f);
 		return new Vec2(x, y);
 	}
 
@@ -83,7 +87,7 @@ public class GameMap extends Surface {
 						if (b.getAngle() != 0) {
 							translate(v.x, v.y);
 							rotate(-b.getAngle());
-							drawImage(ie, 0+ image.getOffX(),
+							drawImage(ie, 0 + image.getOffX(),
 									0 + image.getOffY());
 							rotate(b.getAngle());
 							translate(-v.x, -v.y);
@@ -105,12 +109,12 @@ public class GameMap extends Surface {
 					setStrokeStyle(new Color(30, 30, 30));
 				}
 				if (s.getType() == ShapeType.CIRCLE_SHAPE) {
-//					CircleShape circle = (CircleShape) s;
-//					Vec2 center = XForm.mul(xf, circle.getLocalPosition());
-//					float radius = circle.getRadius() * scaleFactor;
-//					center = worldToScreen(center);
-//					strokeShape(new ShapeBuilder().drawCircle(center.x,
-//							center.y, radius).build());
+					// CircleShape circle = (CircleShape) s;
+					// Vec2 center = XForm.mul(xf, circle.getLocalPosition());
+					// float radius = circle.getRadius() * scaleFactor;
+					// center = worldToScreen(center);
+					// strokeShape(new ShapeBuilder().drawCircle(center.x,
+					// center.y, radius).build());
 				} else if (s.getType() == ShapeType.POLYGON_SHAPE) {
 					PolygonShape poly = (PolygonShape) s;
 					int vertexCount = poly.getVertexCount();
