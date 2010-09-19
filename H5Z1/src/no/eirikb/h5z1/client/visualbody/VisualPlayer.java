@@ -31,6 +31,10 @@ public class VisualPlayer extends Body implements VisualBody {
 	private int visualX;
 	private int visualY;
 
+	private List<VisualImage> flameImages;
+	private VisualImage flame;
+	private int showFlame = 0;
+
 	public VisualPlayer(BodyDef bd, World world) {
 		super(bd, world);
 
@@ -57,6 +61,10 @@ public class VisualPlayer extends Body implements VisualBody {
 				images.add(standRightImage);
 				images.add(topImages.get(0));
 				jumpImages.add(jumpAnimation.animate());
+				flameImages = new ArrayList<VisualImage>();
+
+				flameImages.add(new VisualImage(images2.get("fr"), 15, -8));
+				flameImages.add(new VisualImage(images2.get("fl"), -33, -8));
 			}
 		});
 	}
@@ -97,11 +105,20 @@ public class VisualPlayer extends Body implements VisualBody {
 				number = 3;
 			}
 		}
+		images.remove(flame);
+		jumpImages.remove(flame);
+		flame = flameImages.get(cosin[0] > 0 ? 0 : 1);
 		images.set(1, topImages.get(number + way));
 	}
 
 	@Override
 	public List<VisualImage> getImages() {
+		if (showFlame > 0) {
+			if (--showFlame <= 0) {
+				images.remove(flame);
+				jumpImages.remove(flame);
+			}
+		}
 		if (jumping) {
 			jumpImages.set(0, jumpAnimation.animate());
 			return jumpImages;
@@ -143,6 +160,16 @@ public class VisualPlayer extends Body implements VisualBody {
 
 	public boolean isJumping() {
 		return jumping;
+	}
+
+	public void setShowFlame(int showFlame) {
+		if (this.showFlame <= 0) {
+			this.showFlame = showFlame;
+			if (showFlame > 0) {
+				images.add(flame);
+				jumpImages.add(flame);
+			}
+		}
 	}
 
 }

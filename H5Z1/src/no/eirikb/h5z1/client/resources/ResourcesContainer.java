@@ -31,7 +31,7 @@ public class ResourcesContainer {
 			Resources.INSTANCE.zl2(), Resources.INSTANCE.zl3(),
 			Resources.INSTANCE.zr1(), Resources.INSTANCE.zr2(),
 			Resources.INSTANCE.zr3(), Resources.INSTANCE.crate(),
-			Resources.INSTANCE.fr() };
+			Resources.INSTANCE.fr(), Resources.INSTANCE.fl() };
 	private static int count;
 
 	private ResourcesContainer() {

@@ -24,10 +24,10 @@ public interface Resources extends ClientBundle {
 
 	@Source("gun1.png")
 	ImageResource gun1();
-	
+
 	@Source("bullet1.png")
 	ImageResource bullet1();
-	
+
 	@Source("ptl1.png")
 	ExternalImageResource ptl1();
 
@@ -126,10 +126,13 @@ public interface Resources extends ClientBundle {
 
 	@Source("zr3.png")
 	ExternalImageResource zr3();
-	
+
 	@Source("crate.png")
 	ExternalImageResource crate();
-	
+
 	@Source("fr.png")
 	ExternalImageResource fr();
+
+	@Source("fl.png")
+	ExternalImageResource fl();
 }

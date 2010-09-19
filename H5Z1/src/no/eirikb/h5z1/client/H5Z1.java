@@ -23,6 +23,7 @@ import org.jbox2d.dynamics.ContactFilter;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -132,7 +133,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 					b.setMassFromShapes();
 					b.setLinearVelocity(new Vec2((float) (cosin[0] * 100),
 							(float) (-cosin[1] * 100)));
-
+					me.setShowFlame(5);
 					if (ammopos >= ammo.size()) {
 						shooting = false;
 						reloading = true;
@@ -250,6 +251,10 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 				jump = true;
 				me.setJumping(true);
 			}
+		} else if (event.getNativeKeyCode() == 82) {
+			shooting = false;
+			reloading = true;
+			reload = RELOADSPEED;
 		}
 	}
 

@@ -24,9 +24,9 @@ public class MapBuilder {
 		Body ground = b;
 
 		pd = new PolygonDef();
-		pd.setAsBox(15.0f, 0.2f);
+		pd.setAsBox(30.0f, 0.2f);
 		bd = new BodyDef();
-		bd.position.set(35.0f, 0.0f);
+		bd.position.set(50.0f, 0.0f);
 		bd.allowSleep = true;
 		b = world.createBody(bd);
 		b.createShape(pd);
@@ -89,7 +89,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
-		
+
 		pd = new PolygonDef();
 		pd.setAsBox(0.2f, 1.5f);
 		pd.density = 1;
@@ -100,7 +100,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
-		
+
 		pd = new PolygonDef();
 		pd.setAsBox(1.5f, 0.2f);
 		pd.density = 1;
@@ -111,7 +111,7 @@ public class MapBuilder {
 		b = world.createBody(bd);
 		b.createShape(pd);
 		b.setMassFromShapes();
-		
+
 		pd = new PolygonDef();
 		pd.setAsBox(0.8f, 0.8f);
 		pd.density = 1;
@@ -122,6 +122,19 @@ public class MapBuilder {
 		world.createBody(crate);
 		crate.createShape(pd);
 		crate.setMassFromShapes();
+
+		for (int i = 0; i < 10; i++) {
+			pd = new PolygonDef();
+			pd.setAsBox(0.2f, 1.5f);
+			pd.density = 1;
+			pd.friction = 10;
+			bd = new BodyDef();
+			bd.position.set(40 + 2 * i, 1.5f);
+			bd.allowSleep = true;
+			b = world.createBody(bd);
+			b.createShape(pd);
+			b.setMassFromShapes();
+		}
 	}
 
 	// sd = new PolygonDef();
