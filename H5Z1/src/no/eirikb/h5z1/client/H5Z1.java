@@ -202,8 +202,8 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (me != null) {
-					mouseX = event.getRelativeX(gameMap.getElement()) - 100;
-					mouseY = event.getRelativeY(gameMap.getElement()) + 100;
+					mouseX = event.getRelativeX(gameMap.getElement()) - 60;
+					mouseY = event.getRelativeY(gameMap.getElement()) + 60;
 					me.onMouse(mouseX, mouseY);
 				}
 			}

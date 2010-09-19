@@ -204,9 +204,13 @@ public class GameMap extends FocusPanel {
 			Vec2 v = worldToScreen(me.getPosition());
 			double cosin[] = me.getCosin();
 			float x = v.x + (float) cosin[0] * 15;
-			float y = v.y + (float) cosin[1] * 15 - 10;
+			float y = v.y + (float) cosin[1] * 15 - 8;
 
-			double a = cosin[0] > 0 ? cosin[1] - 0.3 : (-cosin[1] + Math.PI);
+			double a = cosin[1];
+			if (cosin[0] < 0) {
+				a = -cosin[1] + Math.PI;
+				y += 8;
+			}
 
 			surface.translate(x, y);
 			surface.rotate(a);
