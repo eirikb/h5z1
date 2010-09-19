@@ -1,22 +1,30 @@
 package no.eirikb.h5z1.client;
 
 import gwt.g2d.client.util.FpsTimer;
+
+import java.util.Map;
+
 import no.eirikb.h5z1.client.keyhack.KeyHack;
 import no.eirikb.h5z1.client.keyhack.KeyHackCallback;
+import no.eirikb.h5z1.client.resources.ResourcesContainer;
+import no.eirikb.h5z1.client.resources.ResourcesContainer.ListenComplete;
+import no.eirikb.h5z1.client.visualbody.VisualPlayer;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -35,13 +43,25 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	private float way = 0;
 	private boolean jump = false;
 	private FpsTimer fpsTimer;
+	private VisualPlayer me;
 
 	public void onModuleLoad() {
+
+		ResourcesContainer.init(new ListenComplete() {
+
+			@Override
+			public void onComplete(Map<String, ImageElement> images) {
+				start();
+			}
+		});
+	}
+
+	private void start() {
 
 		aabb = new AABB();
 		aabb.lowerBound = new Vec2(-200.0f, -100.0f);
 		aabb.upperBound = new Vec2(200.0f, 200.0f);
-		Vec2 gravity = new Vec2(0.0f, -10.0f);
+		Vec2 gravity = new Vec2(0.0f, -50.0f);
 		boolean doSleep = false;
 		world = new World(aabb, gravity, doSleep);
 
@@ -60,13 +80,11 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 				box2DTime = System.currentTimeMillis() - box2DTime;
 				gameMap.draw(box2DTime, (int) getFps());
 				keyHack.callback();
-				Body me = mapBuilder.getMe();
 				if (me != null) {
 					gameMap.setCamera(me.getPosition().x, 0, 20);
-					float y = jump ? 5
-							: mapBuilder.getMe().getLinearVelocity().y;
+					float y = jump ? 15 : me.getLinearVelocity().y;
 					jump = false;
-					mapBuilder.getMe().setLinearVelocity(new Vec2(way, y));
+					me.setLinearVelocity(new Vec2(way, y));
 				}
 
 			}
@@ -100,6 +118,17 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			}
 		});
 
+		gameMap.addMouseMoveHandler(new MouseMoveHandler() {
+
+			@Override
+			public void onMouseMove(MouseMoveEvent event) {
+				if (me != null) {
+					me.onMouse(event.getRelativeX(gameMap.getElement()),
+							event.getRelativeY(gameMap.getElement()));
+				}
+			}
+		});
+
 		RootPanel.get().add(new Button("Stop", new ClickHandler() {
 
 			@Override
@@ -108,6 +137,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			}
 		}));
 		RootPanel.get().add(gameMap);
+		me = mapBuilder.getMe();
 	}
 
 	@Override

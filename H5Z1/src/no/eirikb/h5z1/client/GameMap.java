@@ -1,8 +1,11 @@
 package no.eirikb.h5z1.client;
 
 import gwt.g2d.client.graphics.Color;
+import gwt.g2d.client.graphics.DirectShapeRenderer;
 import gwt.g2d.client.graphics.Surface;
 import gwt.g2d.client.graphics.shapes.ShapeBuilder;
+import no.eirikb.h5z1.visual.VisualBody;
+import no.eirikb.h5z1.visual.VisualImage;
 
 import org.jbox2d.collision.CircleShape;
 import org.jbox2d.collision.PolygonShape;
@@ -14,6 +17,7 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 
 public class GameMap extends Surface {
 	private World world;
@@ -69,6 +73,31 @@ public class GameMap extends Surface {
 		clear();
 		for (Body b = world.getBodyList(); b != null; b = b.m_next) {
 			XForm xf = b.getXForm();
+
+			if (b instanceof VisualBody) {
+				VisualBody visualBody = (VisualBody) b;
+
+				for (VisualImage image : visualBody.getImages()) {
+					Vec2 v = worldToScreen(b.getPosition());
+					visualBody.setVisualX((int) v.x);
+					visualBody.setVisualY((int) v.y);
+					ImageElement ie = image.getImage();
+					if (ie != null) {
+						if (b.getAngle() != 0) {
+							translate(v.x, v.y);
+							rotate(-b.getAngle());
+							drawImage(ie, 0+ image.getOffX(),
+									0 + image.getOffY());
+							rotate(b.getAngle());
+							translate(-v.x, -v.y);
+						} else {
+							drawImage(ie, v.x + image.getOffX(),
+									v.y + image.getOffY());
+						}
+					}
+				}
+			}
+
 			for (Shape s = b.m_shapeList; s != null; s = s.m_next) {
 				setStrokeStyle(new Color(0, 0, 0));
 				if (b.m_invMass == 0.0f) {
@@ -90,7 +119,6 @@ public class GameMap extends Surface {
 					PolygonShape poly = (PolygonShape) s;
 					int vertexCount = poly.getVertexCount();
 					Vec2[] localVertices = poly.getVertices();
-
 					ShapeBuilder shapeBuilder = new ShapeBuilder();
 					for (int i = 0; i < vertexCount; ++i) {
 						int ind = (i + 1 < vertexCount) ? i + 1

@@ -1,5 +1,8 @@
 package no.eirikb.h5z1.client;
 
+import no.eirikb.h5z1.client.visualbody.VisualCrate;
+import no.eirikb.h5z1.client.visualbody.VisualPlayer;
+
 import org.jbox2d.collision.PolygonDef;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -8,7 +11,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 public class MapBuilder {
-	private Body me;
+	private VisualPlayer me;
 
 	public void createMap(World world) {
 
@@ -21,9 +24,10 @@ public class MapBuilder {
 		Body ground = b;
 
 		pd = new PolygonDef();
-		pd.setAsBox(10.0f, 0.2f);
+		pd.setAsBox(15.0f, 0.2f);
 		bd = new BodyDef();
-		bd.position.set(30.0f, 0.0f);
+		bd.position.set(35.0f, 0.0f);
+		bd.allowSleep = true;
 		b = world.createBody(bd);
 		b.createShape(pd);
 		Body ground2 = b;
@@ -41,16 +45,16 @@ public class MapBuilder {
 		b.setMassFromShapes();
 
 		pd = new PolygonDef();
-		pd.setAsBox(0.5f, 1);
+		pd.setAsBox(0.5f, 0.8f);
 		pd.density = 1;
 		pd.friction = 0;
 		bd = new BodyDef();
 		bd.position.set(-2, 1.5f);
 		bd.fixedRotation = true;
-		b = world.createBody(bd);
-		b.createShape(pd);
-		b.setMassFromShapes();
-		me = b;
+		me = new VisualPlayer(bd, world);
+		world.createBody(me);
+		me.createShape(pd);
+		me.setMassFromShapes();
 
 		Body prevBody = ground;
 		RevoluteJointDef jd = new RevoluteJointDef();
@@ -59,6 +63,7 @@ public class MapBuilder {
 			pd.setAsBox(0.5f, 0.1f);
 			pd.density = 1;
 			pd.friction = 0;
+			bd.allowSleep = true;
 			bd = new BodyDef();
 			float x = 10.5f + i;
 			bd.position.set(x, 0);
@@ -74,6 +79,50 @@ public class MapBuilder {
 		Vec2 anchor = new Vec2(20.0f, 0);
 		jd.initialize(prevBody, ground2, anchor);
 		world.createJoint(jd);
+
+		pd = new PolygonDef();
+		pd.setAsBox(0.2f, 1.5f);
+		pd.density = 1;
+		pd.friction = 10;
+		bd = new BodyDef();
+		bd.position.set(30, 1.5f);
+		bd.allowSleep = true;
+		b = world.createBody(bd);
+		b.createShape(pd);
+		b.setMassFromShapes();
+		
+		pd = new PolygonDef();
+		pd.setAsBox(0.2f, 1.5f);
+		pd.density = 1;
+		pd.friction = 10;
+		bd = new BodyDef();
+		bd.position.set(32, 1.5f);
+		bd.allowSleep = true;
+		b = world.createBody(bd);
+		b.createShape(pd);
+		b.setMassFromShapes();
+		
+		pd = new PolygonDef();
+		pd.setAsBox(1.5f, 0.2f);
+		pd.density = 1;
+		pd.friction = 10;
+		bd = new BodyDef();
+		bd.position.set(31, 4);
+		bd.allowSleep = true;
+		b = world.createBody(bd);
+		b.createShape(pd);
+		b.setMassFromShapes();
+		
+		pd = new PolygonDef();
+		pd.setAsBox(0.8f, 0.8f);
+		pd.density = 1;
+		pd.friction = 10;
+		bd = new BodyDef();
+		bd.position.set(1.5f, 1.5f);
+		VisualCrate crate = new VisualCrate(bd, world);
+		world.createBody(crate);
+		crate.createShape(pd);
+		crate.setMassFromShapes();
 	}
 
 	// sd = new PolygonDef();
@@ -129,7 +178,7 @@ public class MapBuilder {
 	// body3.setMassFromShapes();
 	// }
 
-	public Body getMe() {
+	public VisualPlayer getMe() {
 		return me;
 	}
 }
