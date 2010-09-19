@@ -8,6 +8,8 @@ import java.util.Map;
 
 import no.eirikb.h5z1.client.keyhack.KeyHack;
 import no.eirikb.h5z1.client.keyhack.KeyHackCallback;
+import no.eirikb.h5z1.client.maps.ExampleMap;
+import no.eirikb.h5z1.client.maps.GameMap;
 import no.eirikb.h5z1.client.resources.Resources;
 import no.eirikb.h5z1.client.resources.ResourcesContainer;
 import no.eirikb.h5z1.client.resources.ResourcesContainer.ListenComplete;
@@ -23,7 +25,6 @@ import org.jbox2d.dynamics.ContactFilter;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,7 +39,6 @@ import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -51,9 +51,9 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	private final int HEIGHT = 480;
 	private World world;
 	private AABB aabb;
-	private GameMap gameMap;
+	private GameMapContainer gameMapContainer;
 	private KeyHack keyHack;
-	private MapBuilder mapBuilder;
+	private GameMap gameMap;
 	private float way = 0;
 	private boolean jump = false;
 	private FpsTimer fpsTimer;
@@ -82,7 +82,6 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	}
 
 	private void start() {
-		FocusPanel fp = new FocusPanel();
 		ammo = new ArrayList<Image>();
 		for (int i = 0; i < 20; i++) {
 			ammo.add(new Image(Resources.INSTANCE.bullet1()));
@@ -106,10 +105,9 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		});
 
 		final TestSettings settings = new TestSettings();
-		mapBuilder = new MapBuilder();
-		mapBuilder.createMap(world);
+		gameMap = new ExampleMap(world, 10000, HEIGHT);
 
-		gameMap = new GameMap(world, mapBuilder, 10000, HEIGHT, WIDTH, HEIGHT);
+		gameMapContainer = new GameMapContainer(world, gameMap, WIDTH, HEIGHT);
 		final float timeStep = settings.hz > 0.0f ? 1.0f / settings.hz : 0.0f;
 		fpsTimer = new FpsTimer() {
 
@@ -158,10 +156,11 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 				long box2DTime = System.currentTimeMillis();
 				world.step(timeStep, settings.iterationCount);
 				box2DTime = System.currentTimeMillis() - box2DTime;
-				gameMap.draw(box2DTime, (int) getFps());
+				gameMapContainer.draw(box2DTime, (int) getFps());
 				keyHack.callback();
 				if (me != null) {
-					gameMap.setCamera(me.getPosition().x, 2, 20);
+					gameMapContainer.setCamera(me.getPosition().x,
+							gameMap.getCameraY(), gameMap.getScale());
 					float y = jump ? 15 : me.getLinearVelocity().y;
 					jump = false;
 					me.setLinearVelocity(new Vec2(way, y));
@@ -172,7 +171,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 
 		keyHack = new KeyHack(this);
 
-		gameMap.addKeyDownHandler(new KeyDownHandler() {
+		gameMapContainer.addKeyDownHandler(new KeyDownHandler() {
 
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
@@ -186,7 +185,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			}
 		});
 
-		gameMap.addKeyUpHandler(new KeyUpHandler() {
+		gameMapContainer.addKeyUpHandler(new KeyUpHandler() {
 
 			public void onKeyUp(KeyUpEvent event) {
 				if (keyHack != null) {
@@ -197,19 +196,19 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			}
 		});
 
-		gameMap.addMouseMoveHandler(new MouseMoveHandler() {
+		gameMapContainer.addMouseMoveHandler(new MouseMoveHandler() {
 
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (me != null) {
-					mouseX = event.getRelativeX(gameMap.getElement()) - 60;
-					mouseY = event.getRelativeY(gameMap.getElement()) + 60;
+					mouseX = event.getRelativeX(gameMapContainer.getElement()) - 60;
+					mouseY = event.getRelativeY(gameMapContainer.getElement()) + 60;
 					me.onMouse(mouseX, mouseY);
 				}
 			}
 		});
 
-		gameMap.addMouseDownHandler(new MouseDownHandler() {
+		gameMapContainer.addMouseDownHandler(new MouseDownHandler() {
 
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
@@ -219,7 +218,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			}
 		});
 
-		gameMap.addMouseUpHandler(new MouseUpHandler() {
+		gameMapContainer.addMouseUpHandler(new MouseUpHandler() {
 
 			@Override
 			public void onMouseUp(MouseUpEvent event) {
@@ -234,12 +233,14 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 				fpsTimer.cancel();
 			}
 		}));
-		RootPanel.get().add(gameMap);
-		me = mapBuilder.getMe();
+		RootPanel.get().add(gameMapContainer);
+		me = gameMap.getMe();
 		RootPanel.get().add(new Image(Resources.INSTANCE.gun1()));
 		for (Image bullet : ammo) {
 			RootPanel.get().add(bullet);
 		}
+
+		gameMapContainer.setFocus(true);
 	}
 
 	@Override

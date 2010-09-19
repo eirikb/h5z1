@@ -138,4 +138,7 @@ public interface Resources extends ClientBundle {
 	
 	@Source("bg2.png")
 	ImageResource bg2();
+	
+	@Source("log.png")
+	ExternalImageResource log();
 }

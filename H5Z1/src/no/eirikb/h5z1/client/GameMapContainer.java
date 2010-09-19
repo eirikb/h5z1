@@ -3,7 +3,7 @@ package no.eirikb.h5z1.client;
 import gwt.g2d.client.graphics.Color;
 import gwt.g2d.client.graphics.Surface;
 import gwt.g2d.client.graphics.shapes.ShapeBuilder;
-import no.eirikb.h5z1.client.resources.Resources;
+import no.eirikb.h5z1.client.maps.GameMap;
 import no.eirikb.h5z1.client.visualbody.VisualPlayer;
 import no.eirikb.h5z1.client.visualbody.VisualStatic;
 import no.eirikb.h5z1.visual.VisualBody;
@@ -18,7 +18,6 @@ import org.jbox2d.common.XForm;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -27,8 +26,8 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class GameMap extends FocusPanel {
-	private MapBuilder mapBuilder;
+public class GameMapContainer extends FocusPanel {
+	private GameMap gameMap;
 	private int viewportWidth;
 	private int viewportHeight;
 	private float transX;
@@ -43,13 +42,15 @@ public class GameMap extends FocusPanel {
 	private Surface surface;
 	private SimplePanel mouseBlock;
 
-	public GameMap(World world, MapBuilder mapBuilder, int width, int height,
-			int viewportWidth, int viewportHeight) {
+	public GameMapContainer(World world, GameMap gameMap, int viewportWidth,
+			int viewportHeight) {
 		super();
 		setSize(viewportWidth + "px", viewportHeight + "px");
-		this.mapBuilder = mapBuilder;
+		this.gameMap = gameMap;
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
+		int width = gameMap.getWidth();
+		int height = gameMap.getHeight();
 
 		getElement().getStyle().setCursor(Cursor.CROSSHAIR);
 
@@ -77,7 +78,8 @@ public class GameMap extends FocusPanel {
 
 		getElement().getStyle().setOverflow(Overflow.HIDDEN);
 
-		setCamera(-2, 2, 20);
+		setCamera(gameMap.getMe().getPosition().x, gameMap.getCameraY(),
+				gameMap.getScale());
 
 		for (Body b = world.getBodyList(); b != null; b = b.m_next) {
 			if (b instanceof VisualStatic) {
@@ -119,10 +121,12 @@ public class GameMap extends FocusPanel {
 			}
 		}
 
-		Image image = new Image(Resources.INSTANCE.bg2());
-		for (int i = 0; i < (width / image.getWidth()) + 1; i++) {
-			background1.add(image, i * image.getWidth(), 0);
-			image = new Image(Resources.INSTANCE.bg2());
+		if (gameMap.getBackground1Image() != null) {
+			Image image = new Image(gameMap.getBackground1Image());
+			for (int i = 0; i < (width / image.getWidth()) + 1; i++) {
+				background1.add(image, i * image.getWidth(), 0);
+				image = new Image(gameMap.getBackground1Image());
+			}
 		}
 	}
 
@@ -175,7 +179,7 @@ public class GameMap extends FocusPanel {
 		container.setWidgetPosition(foreground, newX, 0);
 		container.setWidgetPosition(mouseBlock, 0, 0);
 		surface.clear();
-		for (Body body : mapBuilder.getVisualBodies()) {
+		for (Body body : gameMap.getVisualBodies()) {
 			VisualBody visualBody = (VisualBody) body;
 			for (VisualImage image : visualBody.getImages()) {
 				Vec2 v = worldToScreen(body.getPosition());
@@ -198,7 +202,7 @@ public class GameMap extends FocusPanel {
 			}
 		}
 
-		VisualPlayer me = mapBuilder.getMe();
+		VisualPlayer me = gameMap.getMe();
 		ImageElement flame = me.getFlame();
 		if (flame != null) {
 			Vec2 v = worldToScreen(me.getPosition());
@@ -219,7 +223,7 @@ public class GameMap extends FocusPanel {
 			surface.translate(-x, -y);
 		}
 
-		for (Body body : mapBuilder.getBodies()) {
+		for (Body body : gameMap.getBodies()) {
 			XForm xf = body.getXForm();
 			for (Shape s = body.m_shapeList; s != null; s = s.m_next) {
 				surface.setStrokeStyle(new Color(0, 0, 0));

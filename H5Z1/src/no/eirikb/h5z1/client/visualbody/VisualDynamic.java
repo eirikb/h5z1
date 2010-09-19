@@ -15,17 +15,18 @@ import org.jbox2d.dynamics.World;
 
 import com.google.gwt.dom.client.ImageElement;
 
-public class VisualCrate extends Body implements VisualBody {
+public class VisualDynamic extends Body implements VisualBody {
 	private List<VisualImage> images;
 
-	public VisualCrate(BodyDef bd, World world) {
+	public VisualDynamic(BodyDef bd, World world, final String image,
+			final int offsetX, final int offsetY) {
 		super(bd, world);
 		images = new ArrayList<VisualImage>();
 		ResourcesContainer.init(new ListenComplete() {
 
 			@Override
 			public void onComplete(Map<String, ImageElement> images2) {
-				images.add(new VisualImage(images2.get("crate"), -16, -16));
+				images.add(new VisualImage(images2.get(image), offsetX, offsetY));
 			}
 		});
 	}
