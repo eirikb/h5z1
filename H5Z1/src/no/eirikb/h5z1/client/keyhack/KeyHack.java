@@ -43,15 +43,15 @@ public class KeyHack {
 		if (lastKeyPress == null) {
 			nativeKeyCode = event.getNativeKeyCode();
 			keyHackCallback.keyDown(event);
-			keyCodes.add(event.getNativeKeyCode());
 		}
 	}
 
 	public void keyUp(KeyUpEvent event) {
 		if (anotherKeyPresses) {
 			anotherKeyPresses = false;
-			keyHackCallback.keyUp(keyCodes.remove(keyCodes.size() - 1));
+			keyHackCallback.keyUp(event.getNativeKeyCode());
 		} else {
+			keyCodes.add(event.getNativeKeyCode());
 			lastKeyPress = System.currentTimeMillis();
 		}
 	}
