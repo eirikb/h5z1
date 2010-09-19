@@ -10,6 +10,8 @@ package no.eirikb.h5z1.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
+
 import gwt.g2d.resources.client.ExternalImageResource;
 
 /**
@@ -20,6 +22,12 @@ public interface Resources extends ClientBundle {
 
 	public Resources INSTANCE = GWT.create(Resources.class);
 
+	@Source("gun1.png")
+	ImageResource gun1();
+	
+	@Source("bullet1.png")
+	ImageResource bullet1();
+	
 	@Source("ptl1.png")
 	ExternalImageResource ptl1();
 

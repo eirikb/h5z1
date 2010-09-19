@@ -2,10 +2,13 @@ package no.eirikb.h5z1.client;
 
 import gwt.g2d.client.util.FpsTimer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import no.eirikb.h5z1.client.keyhack.KeyHack;
 import no.eirikb.h5z1.client.keyhack.KeyHackCallback;
+import no.eirikb.h5z1.client.resources.Resources;
 import no.eirikb.h5z1.client.resources.ResourcesContainer;
 import no.eirikb.h5z1.client.resources.ResourcesContainer.ListenComplete;
 import no.eirikb.h5z1.client.visualbody.VisualPlayer;
@@ -31,7 +34,10 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -50,6 +56,17 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	private boolean jump = false;
 	private FpsTimer fpsTimer;
 	private VisualPlayer me;
+	private int fire = 0;
+	private boolean shooting;
+	private boolean reloading = false;
+	private int mouseX;
+	private int mouseY;
+	private List<Image> ammo;
+	private int ammopos = 0;
+	private int reload;
+
+	private final int SHOOTSPEED = 5;
+	private final int RELOADSPEED = 5;
 
 	public void onModuleLoad() {
 
@@ -63,7 +80,10 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 	}
 
 	private void start() {
-
+		ammo = new ArrayList<Image>();
+		for (int i = 0; i < 20; i++) {
+			ammo.add(new Image(Resources.INSTANCE.bullet1()));
+		}
 		aabb = new AABB();
 		aabb.lowerBound = new Vec2(-200.0f, -100.0f);
 		aabb.upperBound = new Vec2(200.0f, 200.0f);
@@ -92,6 +112,45 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 
 			@Override
 			public void update() {
+				if (fire > 0) {
+					fire--;
+				}
+				if (shooting && fire == 0) {
+					fire = SHOOTSPEED;
+
+					RootPanel.get().remove(ammo.get(ammopos++));
+					CircleDef cd = new CircleDef();
+					cd.radius = 0.1f;
+					cd.density = 1;
+					BodyDef bd = new BodyDef();
+					bd.isBullet = true;
+					double cosin[] = me.cosin(mouseX, mouseY);
+					bd.position.set(me.getPosition().x + (float) cosin[0] * 1,
+							me.getPosition().y);
+					Body b = world.createBody(bd);
+					b.createShape(cd);
+					b.setMassFromShapes();
+					b.setLinearVelocity(new Vec2((float) (cosin[0] * 100),
+							(float) (-cosin[1] * 100)));
+
+					if (ammopos >= ammo.size()) {
+						shooting = false;
+						reloading = true;
+						reload = RELOADSPEED;
+					}
+				}
+
+				if (reloading) {
+					if (--reload <= 0) {
+						if (--ammopos > 0) {
+							RootPanel.get().add(ammo.get(ammopos));
+						} else {
+							reloading = false;
+						}
+					}
+
+				}
+
 				long box2DTime = System.currentTimeMillis();
 				world.step(timeStep, settings.iterationCount);
 				box2DTime = System.currentTimeMillis() - box2DTime;
@@ -103,7 +162,6 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 					jump = false;
 					me.setLinearVelocity(new Vec2(way, y));
 				}
-
 			}
 		};
 		fpsTimer.start();
@@ -140,8 +198,9 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
 				if (me != null) {
-					me.onMouse(event.getRelativeX(gameMap.getElement()) - 100,
-							event.getRelativeY(gameMap.getElement()) + 100);
+					mouseX = event.getRelativeX(gameMap.getElement()) - 100;
+					mouseY = event.getRelativeY(gameMap.getElement()) + 100;
+					me.onMouse(mouseX, mouseY);
 				}
 			}
 		});
@@ -150,21 +209,17 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
-				CircleDef cd = new CircleDef();
-				cd.radius = 0.1f;
-				cd.density = 1;
-				BodyDef bd = new BodyDef();
-				bd.isBullet = true;
-				double cosin[] = me.cosin(
-						event.getRelativeX(gameMap.getElement()) - 100,
-						event.getRelativeY(gameMap.getElement()) + 100);
-				bd.position.set(me.getPosition().x + (float) cosin[0] * 1,
-						me.getPosition().y);
-				Body b = world.createBody(bd);
-				b.createShape(cd);
-				b.setMassFromShapes();
-				b.setLinearVelocity(new Vec2((float) (cosin[0] * 100),
-						(float) (-cosin[1] * 100)));
+				if (!reloading) {
+					shooting = true;
+				}
+			}
+		});
+
+		gameMap.addMouseUpHandler(new MouseUpHandler() {
+
+			@Override
+			public void onMouseUp(MouseUpEvent event) {
+				shooting = false;
 			}
 		});
 
@@ -177,6 +232,10 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		}));
 		RootPanel.get().add(gameMap);
 		me = mapBuilder.getMe();
+		RootPanel.get().add(new Image(Resources.INSTANCE.gun1()));
+		for (Image bullet : ammo) {
+			RootPanel.get().add(bullet);
+		}
 	}
 
 	@Override
