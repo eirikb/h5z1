@@ -17,4 +17,8 @@ import java.util.List;
 public interface VisualBody {
 
 	List<VisualImage> getImages();
+
+	void setVisualX(int visualX);
+
+	void setVisualY(int visualY);
 }
