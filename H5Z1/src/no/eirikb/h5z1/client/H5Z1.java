@@ -23,6 +23,7 @@ import org.jbox2d.dynamics.ContactFilter;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,7 +37,6 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -161,7 +161,7 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 				gameMap.draw(box2DTime, (int) getFps());
 				keyHack.callback();
 				if (me != null) {
-					gameMap.setCamera(me.getPosition().x, 0, 20);
+					gameMap.setCamera(me.getPosition().x, 2, 20);
 					float y = jump ? 15 : me.getLinearVelocity().y;
 					jump = false;
 					me.setLinearVelocity(new Vec2(way, y));
@@ -259,6 +259,8 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 			shooting = false;
 			reloading = true;
 			reload = RELOADSPEED;
+		} else if (event.getNativeKeyCode() == 32) {
+			shooting = true;
 		}
 	}
 
@@ -267,6 +269,8 @@ public class H5Z1 implements EntryPoint, KeyHackCallback {
 		if (keyCode == 68 || keyCode == 65) {
 			way = 0;
 			me.stopWalk();
+		} else if (keyCode == 32) {
+			shooting = false;
 		}
 	}
 }

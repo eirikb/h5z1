@@ -10,7 +10,6 @@ import no.eirikb.h5z1.visual.Animation;
 import no.eirikb.h5z1.visual.VisualBody;
 import no.eirikb.h5z1.visual.VisualImage;
 
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
@@ -27,12 +26,12 @@ public class VisualPlayer extends Body implements VisualBody {
 	private List<VisualImage> images;
 	private List<VisualImage> jumpImages;
 	private VisualImage standRightImage;
-	private VisualImage standLeftImage;
+	// private VisualImage standLeftImage;
 	private int visualX;
 	private int visualY;
+	private double[] cosin;
 
-	private List<VisualImage> flameImages;
-	private VisualImage flame;
+	private ImageElement flame;
 	private int showFlame = 0;
 
 	public VisualPlayer(BodyDef bd, World world) {
@@ -56,15 +55,12 @@ public class VisualPlayer extends Body implements VisualBody {
 						-15), 2);
 				standRightImage = new VisualImage(images2.get("pbr1"),
 						bottomOffsetX, bottomOffsetY);
-				standLeftImage = new VisualImage(images2.get("pbl1"),
-						bottomOffsetX, bottomOffsetY);
+				// standLeftImage = new VisualImage(images2.get("pbl1"),
+				// bottomOffsetX, bottomOffsetY);
 				images.add(standRightImage);
 				images.add(topImages.get(0));
 				jumpImages.add(jumpAnimation.animate());
-				flameImages = new ArrayList<VisualImage>();
-
-				flameImages.add(new VisualImage(images2.get("fr"), 15, -8));
-				flameImages.add(new VisualImage(images2.get("fl"), -33, -8));
+				flame = images2.get("fr");
 			}
 		});
 	}
@@ -89,8 +85,7 @@ public class VisualPlayer extends Body implements VisualBody {
 	}
 
 	public void onMouse(int x, int y) {
-
-		double[] cosin = cosin(x, y);
+		cosin = cosin(x, y);
 		int way = cosin[0] > 0 ? 0 : 4;
 		int number = 0;
 		double sin = cosin[1];
@@ -105,19 +100,13 @@ public class VisualPlayer extends Body implements VisualBody {
 				number = 3;
 			}
 		}
-		images.remove(flame);
-		jumpImages.remove(flame);
-		flame = flameImages.get(cosin[0] > 0 ? 0 : 1);
 		images.set(1, topImages.get(number + way));
 	}
 
 	@Override
 	public List<VisualImage> getImages() {
 		if (showFlame > 0) {
-			if (--showFlame <= 0) {
-				images.remove(flame);
-				jumpImages.remove(flame);
-			}
+			--showFlame;
 		}
 		if (jumping) {
 			jumpImages.set(0, jumpAnimation.animate());
@@ -151,11 +140,14 @@ public class VisualPlayer extends Body implements VisualBody {
 	public void setShowFlame(int showFlame) {
 		if (this.showFlame <= 0) {
 			this.showFlame = showFlame;
-			if (showFlame > 0) {
-				images.add(flame);
-				jumpImages.add(flame);
-			}
 		}
+	}
+
+	public ImageElement getFlame() {
+		if (showFlame > 0) {
+			return flame;
+		}
+		return null;
 	}
 
 	public void walkRight() {
@@ -171,5 +163,9 @@ public class VisualPlayer extends Body implements VisualBody {
 		if (images.size() > 0) {
 			images.set(0, standRightImage);
 		}
+	}
+
+	public double[] getCosin() {
+		return cosin;
 	}
 }
