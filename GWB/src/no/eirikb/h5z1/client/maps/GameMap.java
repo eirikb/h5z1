@@ -3,15 +3,12 @@ package no.eirikb.h5z1.client.maps;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.eirikb.h5z1.client.visualbody.VisualPlayer;
-
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.World;
 
 import com.google.gwt.resources.client.ImageResource;
 
 public abstract class GameMap {
-	protected VisualPlayer me;
 	protected List<Body> visualBodies;
 	protected List<Body> bodies;
 	protected int width;
@@ -30,10 +27,6 @@ public abstract class GameMap {
 
 	public List<Body> getVisualBodies() {
 		return visualBodies;
-	}
-
-	public VisualPlayer getMe() {
-		return me;
 	}
 
 	public List<Body> getBodies() {
