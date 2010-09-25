@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='h5z1'>
+	<inherits name='com.google.gwt.user.User' />
+	<entry-point class='no.eirikb.h5z1.client.H5Z1' />
+	<source path='client' />
+</module>
