@@ -1,4 +1,4 @@
-package no.eirikb.h5z1.client.maps;
+package no.eirikb.gwb.maps;
 
 import java.util.ArrayList;
 import java.util.List;

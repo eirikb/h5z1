@@ -20,7 +20,7 @@
  * misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-package no.eirikb.h5z1.client;
+package no.eirikb.gwb.main;
 
 /**
  * Settings for the current test. Mostly self-explanatory. <BR>

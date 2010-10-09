@@ -1,9 +1,9 @@
-package no.eirikb.h5z1.client;
+package no.eirikb.gwb.main;
 
 import gwt.g2d.client.graphics.Color;
 import gwt.g2d.client.graphics.Surface;
 import gwt.g2d.client.graphics.shapes.ShapeBuilder;
-import no.eirikb.h5z1.client.maps.GameMap;
+import no.eirikb.gwb.maps.GameMap;
 
 import org.jbox2d.collision.CircleShape;
 import org.jbox2d.collision.PolygonShape;
@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class GameMapContainer extends FocusPanel {
+public class GWB extends FocusPanel {
 	private GameMap gameMap;
 	private int viewportWidth;
 	private int viewportHeight;
@@ -37,7 +37,7 @@ public class GameMapContainer extends FocusPanel {
 	private Surface surface;
 	private SimplePanel mouseBlock;
 
-	public GameMapContainer(World world, GameMap gameMap, int viewportWidth,
+	public GWB(World world, GameMap gameMap, int viewportWidth,
 			int viewportHeight) {
 		super();
 		setSize(viewportWidth + "px", viewportHeight + "px");
@@ -73,48 +73,48 @@ public class GameMapContainer extends FocusPanel {
 
 		getElement().getStyle().setOverflow(Overflow.HIDDEN);
 
-//		setCamera(gameMap.getMe().getPosition().x, gameMap.getCameraY(),
-//				gameMap.getScale());
+		// setCamera(gameMap.getMe().getPosition().x, gameMap.getCameraY(),
+		// gameMap.getScale());
 
-//		for (Body b = world.getBodyList(); b != null; b = b.m_next) {
-//			if (b instanceof VisualStatic) {
-//				XForm xf = b.getXForm();
-//				VisualStatic visualStatic = (VisualStatic) b;
-//				int minX = Integer.MAX_VALUE;
-//				int maxX = 0;
-//				int minY = Integer.MAX_VALUE;
-//				int maxY = 0;
-//				for (Shape s = b.m_shapeList; s != null; s = s.m_next) {
-//					PolygonShape poly = (PolygonShape) s;
-//					int vertexCount = poly.getVertexCount();
-//					Vec2[] localVertices = poly.getVertices();
-//					for (int i = 0; i < vertexCount; ++i) {
-//						Vec2 v1 = worldToScreen(XForm.mul(xf, localVertices[i]));
-//						if (v1.x < minX) {
-//							minX = (int) v1.x;
-//						}
-//						if (v1.x > maxX) {
-//							maxX = (int) v1.x;
-//						}
-//						if (v1.y < minY) {
-//							minY = (int) v1.y;
-//						}
-//						if (v1.y > maxY) {
-//							maxY = (int) v1.y;
-//						}
-//					}
-//				}
-//				Image image = new Image(visualStatic.getImage());
-//				if (visualStatic.getRepeat()) {
-//					int w = maxX - minX;
-//					for (int i = 0; i < w / image.getWidth(); i++) {
-//						background3.add(image, minX + (i * image.getWidth()),
-//								minY);
-//						image = new Image(visualStatic.getImage());
-//					}
-//				}
-//			}
-//		}
+		// for (Body b = world.getBodyList(); b != null; b = b.m_next) {
+		// if (b instanceof VisualStatic) {
+		// XForm xf = b.getXForm();
+		// VisualStatic visualStatic = (VisualStatic) b;
+		// int minX = Integer.MAX_VALUE;
+		// int maxX = 0;
+		// int minY = Integer.MAX_VALUE;
+		// int maxY = 0;
+		// for (Shape s = b.m_shapeList; s != null; s = s.m_next) {
+		// PolygonShape poly = (PolygonShape) s;
+		// int vertexCount = poly.getVertexCount();
+		// Vec2[] localVertices = poly.getVertices();
+		// for (int i = 0; i < vertexCount; ++i) {
+		// Vec2 v1 = worldToScreen(XForm.mul(xf, localVertices[i]));
+		// if (v1.x < minX) {
+		// minX = (int) v1.x;
+		// }
+		// if (v1.x > maxX) {
+		// maxX = (int) v1.x;
+		// }
+		// if (v1.y < minY) {
+		// minY = (int) v1.y;
+		// }
+		// if (v1.y > maxY) {
+		// maxY = (int) v1.y;
+		// }
+		// }
+		// }
+		// Image image = new Image(visualStatic.getImage());
+		// if (visualStatic.getRepeat()) {
+		// int w = maxX - minX;
+		// for (int i = 0; i < w / image.getWidth(); i++) {
+		// background3.add(image, minX + (i * image.getWidth()),
+		// minY);
+		// image = new Image(visualStatic.getImage());
+		// }
+		// }
+		// }
+		// }
 
 		if (gameMap.getBackground1Image() != null) {
 			Image image = new Image(gameMap.getBackground1Image());
@@ -174,49 +174,49 @@ public class GameMapContainer extends FocusPanel {
 		container.setWidgetPosition(foreground, newX, 0);
 		container.setWidgetPosition(mouseBlock, 0, 0);
 		surface.clear();
-//		for (Body body : gameMap.getVisualBodies()) {
-//			VisualBody visualBody = (VisualBody) body;
-//			for (VisualImage image : visualBody.getImages()) {
-//				Vec2 v = worldToScreen(body.getPosition());
-//				visualBody.setVisualX((int) v.x);
-//				visualBody.setVisualY((int) v.y);
-//				ImageElement ie = image.getImage();
-//				if (ie != null) {
-//					if (body.getAngle() != 0) {
-//						surface.translate(v.x, v.y);
-//						surface.rotate(-body.getAngle());
-//						surface.drawImage(ie, 0 + image.getOffX(),
-//								0 + image.getOffY());
-//						surface.rotate(body.getAngle());
-//						surface.translate(-v.x, -v.y);
-//					} else {
-//						surface.drawImage(ie, v.x + image.getOffX(), v.y
-//								+ image.getOffY());
-//					}
-//				}
-//			}
-//		}
+		// for (Body body : gameMap.getVisualBodies()) {
+		// VisualBody visualBody = (VisualBody) body;
+		// for (VisualImage image : visualBody.getImages()) {
+		// Vec2 v = worldToScreen(body.getPosition());
+		// visualBody.setVisualX((int) v.x);
+		// visualBody.setVisualY((int) v.y);
+		// ImageElement ie = image.getImage();
+		// if (ie != null) {
+		// if (body.getAngle() != 0) {
+		// surface.translate(v.x, v.y);
+		// surface.rotate(-body.getAngle());
+		// surface.drawImage(ie, 0 + image.getOffX(),
+		// 0 + image.getOffY());
+		// surface.rotate(body.getAngle());
+		// surface.translate(-v.x, -v.y);
+		// } else {
+		// surface.drawImage(ie, v.x + image.getOffX(), v.y
+		// + image.getOffY());
+		// }
+		// }
+		// }
+		// }
 
-//		VisualPlayer me = gameMap.getMe();
-//		ImageElement flame = me.getFlame();
-//		if (flame != null) {
-//			Vec2 v = worldToScreen(me.getPosition());
-//			double cosin[] = me.getCosin();
-//			float x = v.x + (float) cosin[0] * 15;
-//			float y = v.y + (float) cosin[1] * 15 - 8;
-//
-//			double a = cosin[1];
-//			if (cosin[0] < 0) {
-//				a = -cosin[1] + Math.PI;
-//				y += 8;
-//			}
-//
-//			surface.translate(x, y);
-//			surface.rotate(a);
-//			surface.drawImage(flame, 0, 0);
-//			surface.rotate(-a);
-//			surface.translate(-x, -y);
-//		}
+		// VisualPlayer me = gameMap.getMe();
+		// ImageElement flame = me.getFlame();
+		// if (flame != null) {
+		// Vec2 v = worldToScreen(me.getPosition());
+		// double cosin[] = me.getCosin();
+		// float x = v.x + (float) cosin[0] * 15;
+		// float y = v.y + (float) cosin[1] * 15 - 8;
+		//
+		// double a = cosin[1];
+		// if (cosin[0] < 0) {
+		// a = -cosin[1] + Math.PI;
+		// y += 8;
+		// }
+		//
+		// surface.translate(x, y);
+		// surface.rotate(a);
+		// surface.drawImage(flame, 0, 0);
+		// surface.rotate(-a);
+		// surface.translate(-x, -y);
+		// }
 
 		for (Body body : gameMap.getBodies()) {
 			XForm xf = body.getXForm();

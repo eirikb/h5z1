@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='gwb'>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='org.jbox2d.JBox2D' />
+	<inherits name='gwt.g2d.g2d' />
+	<source path='main' />
+	<source path='keyhack' />
+	<source path='maps' />
+</module>

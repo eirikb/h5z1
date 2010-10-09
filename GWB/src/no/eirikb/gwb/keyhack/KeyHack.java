@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return Eirik Brandtzæg
  * ----------------------------------------------------------------------------
  */
-package no.eirikb.h5z1.client.keyhack;
+package no.eirikb.gwb.keyhack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,11 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
  * @author Eirik Brandtzæg <eirikdb@gmail.com>
  */
 public class KeyHack {
+	public interface KeyHackCallback {
+		void keyDown(KeyDownEvent event);
+
+		void keyUp(int keyCode);
+	};
 
 	private KeyHackCallback keyHackCallback;
 	private Long lastKeyPress;
