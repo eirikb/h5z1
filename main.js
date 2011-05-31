@@ -1,4 +1,3 @@
-
 var world = utils.createWorld();
 
 var circleSd = new box2d.CircleDef();
@@ -9,12 +8,12 @@ circleSd.friction = 0;
 
 var circleBd = new box2d.BodyDef();
 circleBd.AddShape(circleSd);
-circleBd.position.Set(200, 10);
+circleBd.position.Set(400, 100);
 
 var circleBody = world.CreateBody(circleBd);
 
 var jointDef = new box2d.RevoluteJointDef();
-jointDef.anchorPoint.Set(250, 200);
+jointDef.anchorPoint.Set(250, 100);
 jointDef.body1 = world.GetGroundBody();
 jointDef.body2 = circleBody;
 world.CreateJoint(jointDef);
@@ -32,7 +31,10 @@ $(function() {
         world.Step(1.0 / 60, 1);
         draw.drawWorld(world, ctx);
     },
-    30);
+    30).click(function(e) {
+        console.log(e);
+        utils.createBox(e.offsetX, e.offsetY, 10, 10);
+    });
 
 });
 
