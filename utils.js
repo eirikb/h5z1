@@ -13,15 +13,18 @@ utils.createBall = function(x, y, radius) {
     return world.CreateBody(ballBd);
 };
 
-utils.createBox = function(x, y, width, height, opts) {
+utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
     var boxSd = new box2d.BoxDef();
-    if (opts) {
-        boxSd = $.extend(boxSd, opts);
+    if (boxOpts) {
+        boxSd = $.extend(boxSd, boxOpts);
     } else {
-        boxSd.density = 1.0;
+        boxSd.density = 1;
     }
     boxSd.extents.Set(width, height);
     var boxBd = new box2d.BodyDef();
+    if (bodyOpts) {
+        boxBd = $.extend(boxBd, bodyOpts);
+    }
     boxBd.AddShape(boxSd);
     boxBd.position.Set(x, y);
     return world.CreateBody(boxBd);
