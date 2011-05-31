@@ -13,13 +13,12 @@ utils.createBall = function(x, y, radius) {
     return world.CreateBody(ballBd);
 };
 
-utils.createBox = function(x, y, width, height, fixed, filled) {
+utils.createBox = function(x, y, width, height, opts) {
     var boxSd = new box2d.BoxDef();
-    if (!fixed) {
+    if (opts) {
+        boxSd = $.extend(boxSd, opts);
+    } else {
         boxSd.density = 1.0;
-    }
-    if (filled) {
-        boxSd.userData = 'filled';
     }
     boxSd.extents.Set(width, height);
     var boxBd = new box2d.BodyDef();
@@ -30,7 +29,7 @@ utils.createBox = function(x, y, width, height, fixed, filled) {
 
 utils.link = function(b1, b2) {
     var jd = new box2d.RevoluteJointDef();
-    jd.anchorPoint.Set(b1.m_position.x + 5, b1.m_position.y + 1);
+    jd.anchorPoint.Set(b1.m_position.x, b1.m_position.y + 1);
     jd.body1 = b1;
     jd.body2 = b2;
     world.CreateJoint(jd);
@@ -41,7 +40,10 @@ utils.createBridge = function(x, y, width) {
     i = 1,
     b2;
     for (; i < 10; i++) {
-        b2 = utils.createBox(x + (i * 15), y, 5, 2);
+        b2 = utils.createBox(x + (i * 15), y, 5, 2, {
+            density: 20,
+            friction: 0.5
+        });
         utils.link(b1, b2);
         b1 = b2;
     }

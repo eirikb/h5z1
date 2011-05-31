@@ -9,9 +9,13 @@ $(function() {
     worldAABB.maxVertex.Set(1000, 1000);
 
     world = new box2d.World(worldAABB, gravity, doSleep);
-    utils.createBox(100, 300, 50, 5, true, true);
+    utils.createBox(100, 300, 50, 5, {
+        userData: 'filled'
+    });
     utils.createBridge(150, 300, 100);
-    utils.createBox(350, 300, 50, 5, true, true);
+    utils.createBox(350, 300, 50, 5, {
+        userData: 'filled'
+    });
 
     $canvas = $('<canvas>'),
 
