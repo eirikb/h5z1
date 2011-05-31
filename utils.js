@@ -1,20 +1,5 @@
 var utils = {};
 
-utils.createWorld = function() {
-    var worldAABB = new box2d.AABB(),
-    gravity = new box2d.Vec2(0, 300),
-    doSleep = true;
-
-    worldAABB.minVertex.Set( - 1000, - 1000);
-    worldAABB.maxVertex.Set(1000, 1000);
-
-    utils.world = new box2d.World(worldAABB, gravity, doSleep);
-    utils.createBox(250, 305, 250, 5, true, true);
-    utils.createBox(5, 185, 5, 125, true, true);
-    utils.createBox(495, 185, 5, 125, true, true);
-    return utils.world;
-};
-
 utils.createBall = function(x, y, radius) {
     radius = radius || 20;
     var ballSd = new box2d.CircleDef();
@@ -25,7 +10,7 @@ utils.createBall = function(x, y, radius) {
     var ballBd = new box2d.BodyDef();
     ballBd.AddShape(ballSd);
     ballBd.position.Set(x, y);
-    return utils.world.CreateBody(ballBd);
+    return world.CreateBody(ballBd);
 };
 
 utils.createBox = function(x, y, width, height, fixed, filled) {
@@ -40,6 +25,27 @@ utils.createBox = function(x, y, width, height, fixed, filled) {
     var boxBd = new box2d.BodyDef();
     boxBd.AddShape(boxSd);
     boxBd.position.Set(x, y);
-    return utils.world.CreateBody(boxBd);
+    return world.CreateBody(boxBd);
+};
+
+utils.link = function(b1, b2) {
+    var jd = new box2d.RevoluteJointDef();
+    jd.anchorPoint.Set(b1.m_position.x + 5, b1.m_position.y + 1);
+    jd.body1 = b1;
+    jd.body2 = b2;
+    world.CreateJoint(jd);
+};
+
+utils.createBridge = function(x, y, width) {
+    var b1 = utils.createBox(x, y, 5, 2, true),
+    i = 1,
+    b2;
+    for (; i < 10; i++) {
+        b2 = utils.createBox(x + (i * 15), y, 5, 2);
+        utils.link(b1, b2);
+        b1 = b2;
+    }
+    b2 = utils.createBox(x + (i * 15), y, 5, 2, true);
+    utils.link(b1, b2);
 };
 

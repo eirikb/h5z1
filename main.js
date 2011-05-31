@@ -1,27 +1,21 @@
-var world = utils.createWorld();
-
-var circleSd = new box2d.CircleDef();
-circleSd.density = 1.0;
-circleSd.radius = 20;
-circleSd.restitution = 1.0;
-circleSd.friction = 0;
-
-var circleBd = new box2d.BodyDef();
-circleBd.AddShape(circleSd);
-circleBd.position.Set(400, 100);
-
-var circleBody = world.CreateBody(circleBd);
-
-var jointDef = new box2d.RevoluteJointDef();
-jointDef.anchorPoint.Set(250, 100);
-jointDef.body1 = world.GetGroundBody();
-jointDef.body2 = circleBody;
-world.CreateJoint(jointDef);
-
-var $canvas = $('<canvas>'),
-ctx = $canvas[0].getContext('2d');
+var world;
 
 $(function() {
+    var worldAABB = new box2d.AABB(),
+    gravity = new box2d.Vec2(0, 300),
+    doSleep = true;
+
+    worldAABB.minVertex.Set( - 1000, - 1000);
+    worldAABB.maxVertex.Set(1000, 1000);
+
+    world = new box2d.World(worldAABB, gravity, doSleep);
+    utils.createBox(100, 300, 50, 5, true, true);
+    utils.createBridge(150, 300, 100);
+    utils.createBox(350, 300, 50, 5, true, true);
+
+    $canvas = $('<canvas>'),
+
+    ctx = $canvas[0].getContext('2d');
     $('body').append($canvas);
 
     $canvas.playground({
@@ -34,6 +28,5 @@ $(function() {
     30).click(function(e) {
         utils.createBox(e.offsetX, e.offsetY, 10, 10);
     });
-
 });
 
