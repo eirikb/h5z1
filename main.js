@@ -32,7 +32,6 @@ $(function() {
         draw.drawWorld(world, ctx);
     },
     30).click(function(e) {
-        console.log(e);
         utils.createBox(e.offsetX, e.offsetY, 10, 10);
     });
 
