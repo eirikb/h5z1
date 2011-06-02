@@ -17,14 +17,30 @@ $(function() {
         userData: 'filled'
     });
 
-    player = utils.createBox(155, 270, 10, 20, {
-        density: 1,
-        fritction: 0
-    },
-    {
-        preventRotation: true,
-        allowSleep: false
-    });
+    var boxSd = new box2d.BoxDef();
+    boxSd.density = 1;
+    boxSd.friction = 0;
+    boxSd.extents.Set(10, 20);
+    var boxBd = new box2d.BodyDef();
+    boxBd.preventRotation = true;
+    boxBd.allowSleep = false;
+    boxBd.AddShape(boxSd);
+    boxSd = new box2d.BoxDef();
+    boxSd.density = 1;
+    boxSd.friction = 0;
+    boxSd.extents.Set(6, 2);
+    boxSd.localPosition.Set(1, 22);
+    boxBd.AddShape(boxSd);
+    boxBd.position.Set(150, 250);
+    player = world.CreateBody(boxBd);
+
+    world.SetFilter({
+        ShouldCollide: function(a, b) {
+            if (a === player.m_shapeList || b === player.m_shapeList) {
+                player.canJump = true;
+            }
+        }
+    })
 
     var $canvas = $('<canvas>'),
     ctx = $canvas[0].getContext('2d');
@@ -37,9 +53,12 @@ $(function() {
             player.way = 100;
             break;
         case 87:
-            player.way = player.way ? player.way : 0;
-            var v = player.GetLinearVelocity();
-            v.Set(player.way, -100);
+            if (player.canJump) {
+                player.canJump = false;
+                player.way = player.way ? player.way: 0;
+                var v = player.GetLinearVelocity();
+                v.Set(player.way, - 100);
+            }
             break;
         }
     }).keyup(function(e) {
