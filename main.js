@@ -1,6 +1,6 @@
 var world;
 
-$(function() {
+window.onload = function() {
     var worldAABB = new box2d.AABB(),
     gravity = new box2d.Vec2(0, 300),
     doSleep = true;
@@ -43,9 +43,12 @@ $(function() {
         }
     })
 
-    var $canvas = $('<canvas>'),
-    ctx = $canvas[0].getContext('2d');
-    $('body').append($canvas).keydown(function(e) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 1000;
+    canvas.height = 1000;
+    ctx = canvas.getContext('2d');
+    document.body.appendChild(canvas);
+    document.onkeydown = function(e) {
         switch (e.keyCode) {
         case 65:
             player.way = - 1;
@@ -62,26 +65,28 @@ $(function() {
             }
             break;
         }
-    }).keyup(function(e) {
+    }
+    document.onkeyup = function(e) {
         if ((e.keyCode === 65 && player.way === - 1) || (e.keyCode === 68 && player.way === 1)) {
             var v = player.GetLinearVelocity();
             v.Set(player.way = 0, v.y);
         }
-    });
+    };
 
-    $canvas.playground({
-        width: 1000,
-        height: 1000
-    }).startGame().registerCallback(function() {
+    canvas.onclick = function(e) {
+        utils.createBox(e.offsetX, e.offsetY, 10, 10);
+    };
+
+    var time = Date.now();
+    setInterval(function() {
         world.Step(1.0 / 60, 1);
         if (player.way) {
             var v = player.GetLinearVelocity();
             v.Set(player.way * player.speed, v.y);
         }
         draw.drawWorld(world, ctx);
+
     },
-    30).click(function(e) {
-        utils.createBox(e.offsetX, e.offsetY, 10, 10);
-    });
-});
+    1000 / 60);
+};
 

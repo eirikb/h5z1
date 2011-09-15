@@ -16,14 +16,18 @@ utils.createBall = function(x, y, radius) {
 utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
     var boxSd = new box2d.BoxDef();
     if (boxOpts) {
-        boxSd = $.extend(boxSd, boxOpts);
+        for (var opt in boxOpts) {
+            boxSd[opt] = boxOpts[opt];
+        }
     } else {
         boxSd.density = 1;
     }
     boxSd.extents.Set(width, height);
     var boxBd = new box2d.BodyDef();
     if (bodyOpts) {
-        boxBd = $.extend(boxBd, bodyOpts);
+        for (var opt in boxOpts) {
+            boxSd[opt] = boxOpts[opt];
+        }
     }
     boxBd.AddShape(boxSd);
     boxBd.position.Set(x, y);
