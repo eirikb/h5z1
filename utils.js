@@ -1,6 +1,6 @@
 var utils = {};
 
-utils.createBall = function(x, y, radius) {
+utils.createBall = function(world, x, y, radius) {
     radius = radius || 20;
     var ballSd = new box2d.CircleDef();
     ballSd.density = 1.0;
@@ -13,7 +13,7 @@ utils.createBall = function(x, y, radius) {
     return world.CreateBody(ballBd);
 };
 
-utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
+utils.createBox = function(world, x, y, width, height, boxOpts, bodyOpts) {
     var opt, boxSd = new box2d.BoxDef();
     if (boxOpts) {
         for (opt in boxOpts) {
@@ -38,7 +38,7 @@ utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
     return world.CreateBody(boxBd);
 };
 
-utils.link = function(b1, b2) {
+utils.link = function(world, b1, b2) {
     var jd = new box2d.RevoluteJointDef();
     jd.anchorPoint.Set(b1.m_position.x, b1.m_position.y + 1);
     jd.body1 = b1;
@@ -46,19 +46,19 @@ utils.link = function(b1, b2) {
     world.CreateJoint(jd);
 };
 
-utils.createBridge = function(x, y, width) {
-    var b1 = utils.createBox(x, y, 5, 2, true),
+utils.createBridge = function(world, x, y, width) {
+    var b1 = utils.createBox(world, x, y, 5, 2, true),
     i = 1,
     b2;
     for (; i < 10; i++) {
-        b2 = utils.createBox(x + (i * 15), y, 5, 2, {
+        b2 = utils.createBox(world, x + (i * 15), y, 5, 2, {
             density: 20,
             friction: 0.5
         });
-        utils.link(b1, b2);
+        utils.link(world, b1, b2);
         b1 = b2;
     }
-    b2 = utils.createBox(x + (i * 15), y, 5, 2, true);
-    utils.link(b1, b2);
+    b2 = utils.createBox(world, x + (i * 15), y, 5, 2, true);
+    utils.link(world, b1, b2);
 };
 

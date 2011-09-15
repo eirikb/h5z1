@@ -7,11 +7,11 @@ window.onload = function() {
     worldAABB.maxVertex.Set(1000, 1000);
 
     world = new box2d.World(worldAABB, gravity, doSleep);
-    utils.createBox(100, 300, 50, 5, {
+    utils.createBox(world, 100, 300, 50, 5, {
         userData: 'filled'
     });
-    utils.createBridge(150, 300, 100);
-    utils.createBox(350, 300, 50, 5, {
+    utils.createBridge(world, 150, 300, 100);
+    utils.createBox(world, 350, 300, 50, 5, {
         userData: 'filled'
     });
 
@@ -76,7 +76,7 @@ window.onload = function() {
     };
 
     canvas.onclick = function(e) {
-        utils.createBox(e.offsetX, e.offsetY, 10, 10);
+        utils.createBox(world, e.offsetX, e.offsetY, 10, 10);
     };
 
     setInterval(function() {
