@@ -1,10 +1,7 @@
-var world;
-
 window.onload = function() {
-    var worldAABB = new box2d.AABB(),
+    var player, world, bd, sd, worldAABB = new box2d.AABB(),
     gravity = new box2d.Vec2(0, 300),
     doSleep = true;
-
 
     worldAABB.minVertex.Set( - 1000, - 1000);
     worldAABB.maxVertex.Set(1000, 1000);
@@ -18,21 +15,24 @@ window.onload = function() {
         userData: 'filled'
     });
 
-    var sd = new box2d.BoxDef();
+    bd = new box2d.BodyDef();
+    bd.position.Set(150, 250);
+    bd.preventRotation = true;
+    bd.allowSleep = false;
+
+    sd = new box2d.BoxDef();
     sd.density = 1;
     sd.friction = 0;
     sd.extents.Set(10, 20);
-    var bd = new box2d.BodyDef();
-    bd.preventRotation = true;
-    bd.allowSleep = false;
     bd.AddShape(sd);
+
     sd = new box2d.CircleDef();
     sd.density = 1;
     sd.friction = 1;
     sd.radius = 10;
     sd.localPosition.Set(0, 16);
     bd.AddShape(sd);
-    bd.position.Set(150, 250);
+
     player = world.CreateBody(bd);
     player.speed = 100;
 
