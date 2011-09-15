@@ -14,10 +14,12 @@ utils.createBall = function(x, y, radius) {
 };
 
 utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
-    var boxSd = new box2d.BoxDef();
+    var opt, boxSd = new box2d.BoxDef();
     if (boxOpts) {
-        for (var opt in boxOpts) {
-            boxSd[opt] = boxOpts[opt];
+        for (opt in boxOpts) {
+            if (boxOpts.hasOwnProperty(opt)) {
+                boxSd[opt] = boxOpts[opt];
+            }
         }
     } else {
         boxSd.density = 1;
@@ -25,8 +27,10 @@ utils.createBox = function(x, y, width, height, boxOpts, bodyOpts) {
     boxSd.extents.Set(width, height);
     var boxBd = new box2d.BodyDef();
     if (bodyOpts) {
-        for (var opt in boxOpts) {
-            boxSd[opt] = boxOpts[opt];
+        for (opt in boxOpts) {
+            if (boxOpts.hasOwnProperty(opt)) {
+                boxSd[opt] = boxOpts[opt];
+            }
         }
     }
     boxBd.AddShape(boxSd);

@@ -5,6 +5,7 @@ window.onload = function() {
     gravity = new box2d.Vec2(0, 300),
     doSleep = true;
 
+
     worldAABB.minVertex.Set( - 1000, - 1000);
     worldAABB.maxVertex.Set(1000, 1000);
 
@@ -41,7 +42,7 @@ window.onload = function() {
                 player.canJump = true;
             }
         }
-    })
+    });
 
     var canvas = document.createElement('canvas');
     canvas.width = 1000;
@@ -65,7 +66,7 @@ window.onload = function() {
             }
             break;
         }
-    }
+    };
     document.onkeyup = function(e) {
         if ((e.keyCode === 65 && player.way === - 1) || (e.keyCode === 68 && player.way === 1)) {
             var v = player.GetLinearVelocity();
