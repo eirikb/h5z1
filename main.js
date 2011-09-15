@@ -1,5 +1,5 @@
 window.onload = function() {
-    var player, world, bd, sd, worldAABB = new box2d.AABB(),
+    var canvas, ctx, player, world, bd, sd, worldAABB = new box2d.AABB(),
     gravity = new box2d.Vec2(0, 300),
     doSleep = true;
 
@@ -44,11 +44,12 @@ window.onload = function() {
         }
     });
 
-    var canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     canvas.width = 1000;
     canvas.height = 1000;
     ctx = canvas.getContext('2d');
     document.body.appendChild(canvas);
+
     document.onkeydown = function(e) {
         switch (e.keyCode) {
         case 65:
@@ -78,7 +79,6 @@ window.onload = function() {
         utils.createBox(e.offsetX, e.offsetY, 10, 10);
     };
 
-    var time = Date.now();
     setInterval(function() {
         world.Step(1.0 / 60, 1);
         if (player.way) {
