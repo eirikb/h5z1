@@ -5,7 +5,7 @@ Box2D game?
 
 Demo
 --
-http://eirikb.github.com/h5z1 <- Current JS version
+http://eirikb.github.com/h5z1 <- Current JS version  
 http://h5z1-game.appspot.com <- Old GWT version
 
 GWT
