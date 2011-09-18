@@ -15,25 +15,17 @@ window.onload = function() {
         userData: 'filled'
     }).c();
 
-    bd = new box2d.BodyDef();
-    bd.position.Set(150, 250);
-    bd.preventRotation = true;
-    bd.allowSleep = false;
-
-    sd = new box2d.BoxDef();
-    sd.density = 1;
-    sd.friction = 0;
-    sd.extents.Set(10, 20);
-    bd.AddShape(sd);
-
-    sd = new box2d.CircleDef();
-    sd.density = 1;
-    sd.friction = 1;
-    sd.radius = 10;
-    sd.localPosition.Set(0, 16);
-    bd.AddShape(sd);
-
-    player = world.CreateBody(bd);
+    player = utils.b(world, 150, 250, {
+        allowSleep: false,
+        preventRotation: true
+    }).box(10, 20, {
+        density: 1,
+        friction: 0
+    }).circle(10, {
+        density: 1,
+        friction: 1
+    },
+    0, 16).c();
     player.speed = 100;
 
     world.SetFilter({

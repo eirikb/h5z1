@@ -1,36 +1,40 @@
 var utils = {};
 
+function setDef(def, options, localX, localY) {
+    var opt;
+    if (typeof localX !== 'undefined' && typeof localY !== 'undefined') {
+        def.localPosition.Set(localX, localY);
+    }
+    for (opt in options) {
+        if (options.hasOwnProperty(opt)) {
+            def[opt] = options[opt];
+        }
+    }
+}
+
 utils.body = utils.b = function(world, x, y, options) {
     return (function() {
-        var opt, self = this,
+        var self = this,
         body = new box2d.BodyDef();
 
         body.position.Set(x, y);
-        for (opt in options) {
-            body[opt] = options[opt];
-        }
+        setDef(body, options);
 
-        self.circle = function(radius, options) {
-            var cricle = new box2d.CircleDef();
+        self.circle = function(radius, options, localX, localY) {
+            var circle = new box2d.CircleDef();
 
             circle.radius = radius;
-            for (opt in options) {
-                circle[opt] = options[opt];
-            }
-
+            setDef(circle, options, localX, localY);
             body.AddShape(circle);
 
             return self;
         };
 
-        self.box = function(width, height, options) {
+        self.box = function(width, height, options, localX, localY) {
             var box = new box2d.BoxDef();
 
             box.extents.Set(width, height);
-            for (opt in options) {
-                box[opt] = options[opt];
-            }
-
+            setDef(box, options, localX, localY);
             body.AddShape(box);
 
             return self;
