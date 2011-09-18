@@ -7,13 +7,13 @@ window.onload = function() {
     worldAABB.maxVertex.Set(1000, 1000);
 
     world = new box2d.World(worldAABB, gravity, doSleep);
-    utils.createBox(world, 100, 300, 50, 5, {
+    utils.b(world, 100, 300).box(50, 5, {
         userData: 'filled'
-    });
+    }).c();
     utils.createBridge(world, 150, 300, 100);
-    utils.createBox(world, 350, 300, 50, 5, {
+    utils.b(world, 350, 300).box(50, 5, {
         userData: 'filled'
-    });
+    }).c();
 
     bd = new box2d.BodyDef();
     bd.position.Set(150, 250);
@@ -76,17 +76,25 @@ window.onload = function() {
     };
 
     canvas.onclick = function(e) {
-        utils.createBox(world, e.offsetX, e.offsetY, 10, 10);
+        utils.b(world, e.offsetX, e.offsetY).box(10, 10, {
+            density: 1
+        }).c();
     };
 
+    var t1, t2, t3;
     setInterval(function() {
+        t1 = t2 = Date.now();
         world.Step(1.0 / 60, 1);
+        t2 = Date.now() - t2;
         if (player.way) {
             var v = player.GetLinearVelocity();
             v.Set(player.way * player.speed, v.y);
         }
+        t3 = Date.now();
         draw.drawWorld(world, ctx);
-
+        t1 = Date.now() - t1;
+        t3 = Date.now() - t3;
+        ctx.fillText('FPS: ' + Math.floor(1000 / t1) + '. Game: ' + t2 + '. Draw: ' + t3, 0, 10);
     },
     1000 / 60);
 };
